@@ -1,0 +1,8 @@
+{
+  "cSpell.patterns": [
+    
+  ],
+  "files.associations": {
+    "*.css": "tailwindcss"
+  }
+}
