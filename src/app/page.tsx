@@ -3,7 +3,7 @@
 // import文この辺は理解してるshnd@uiみたいなの使ってる
 import React, { useState } from 'react';
 import { create } from 'zustand';
-import { Bookmark, Edit2, Menu } from 'lucide-react';
+import { Bookmark, Edit2, Edit3, Menu } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
@@ -112,7 +112,6 @@ const useStore = create<TranslationStore>((set) => ({
     }),
 }));
 
-
 // 関数とステートの定義
 const TranslationApp = () => {
   const [inputText, setInputText] = useState('');
@@ -127,7 +126,7 @@ const TranslationApp = () => {
 
   const store = useStore();
 
-// 非同期関数
+  // 非同期関数
   const handleTranslate = async () => {
     if (!inputText.trim() || isTranslating) return;
 
@@ -156,32 +155,27 @@ const TranslationApp = () => {
     setSelectedCategory('');
   };
 
-  // モバイル向けの言語選択コンポーネント
+  // モバイル向けの言語選択コンポーネント　　　紙に書いて
   const LanguageSelector = () => (
-    <div className='flex flex-wrap gap-2 mb-4'>
-      <div className='flex overflow-x-auto pb-2 w-full gap-2 scrollbar-hide'>
-        {store.activeLanguages.map((lang) => (
-          <Button key={lang} onClick={() => setSelectedLang(lang)} variant={selectedLang === lang ? 'default' : 'outline'} className='flex-shrink-0 w-24' disabled={isTranslating}>
-            {LANGUAGES[lang]}
-          </Button>
-        ))}
-      </div>
+    <div className='flex flex-wrap gap-4'>
       <Dialog>
         <DialogTrigger asChild>
-          <Button variant='outline' size='icon' className='flex-shrink-0'>
+          <Button variant='outline' size='icon' className='flex-shrink-0, w-full' disabled={isTranslating}>
             <Edit2 className='h-4 w-4' />
+            言語選択 
           </Button>
         </DialogTrigger>
         <DialogContent className='w-[90vw] max-w-lg'>
           <DialogHeader>
-            <DialogTitle>表示する言語を選択</DialogTitle>
+            <DialogTitle className='flex justify-center'>表示する言語を選択</DialogTitle>
           </DialogHeader>
-          <div className='flex flex-wrap gap-2 p-4'>
+          <div className='flex flex-wrap justify-center gap-2 p-4'>
             {Object.entries(LANGUAGES).map(([code, name]) => (
               <Button
                 key={code}
                 variant={store.activeLanguages.includes(code) ? 'default' : 'outline'}
                 onClick={() => {
+                  // includeでcodeが含まれているかどうかをチェック。ストアからアクティブな言語をもってきてcodeを格納。
                   const newLanguages = store.activeLanguages.includes(code) ? store.activeLanguages.filter((lang) => lang !== code) : [...store.activeLanguages, code];
                   store.updateActiveLanguages(newLanguages);
                 }}
@@ -193,9 +187,17 @@ const TranslationApp = () => {
           </div>
         </DialogContent>
       </Dialog>
+      <div className='flex flex-wrap justify-center pb-2 w-full gap-1 scrollbar-hide'>
+        {store.activeLanguages.map((lang) => (
+          <Button key={lang} onClick={() => setSelectedLang(lang)} variant={selectedLang === lang ? 'default' : 'outline'} className='flex-shrink-0 w-24' disabled={isTranslating}>
+            {LANGUAGES[lang]}
+          </Button>
+        ))}
+      </div>
     </div>
   );
 
+  // サイドバー
   const SavedPhrasesSheet = () => (
     <Sheet open={isSidebarOpen} onOpenChange={setIsSidebarOpen}>
       <SheetTrigger asChild>
@@ -232,6 +234,7 @@ const TranslationApp = () => {
                     {isTranslating ? '翻訳中...' : `${LANGUAGES[selectedLang]}に翻訳`}
                   </Button>
 
+                  {/* 翻訳成功したら表示 */}
                   {currentTranslation && (
                     <div className='space-y-4 mt-4'>
                       <div className='p-4 bg-slate-50 rounded-lg space-y-2'>
