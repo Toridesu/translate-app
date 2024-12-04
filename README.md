@@ -7,7 +7,7 @@ $ npx create-next-app@14
 
 ## shadcn の追加
 
-npx shadcn@latest add button
+npx shadcn@latest add badge
 
 shadcn/ui
 clsx
@@ -31,4 +31,11 @@ settings.jsonに記載でglobal.cssのエラーは解消
 
 2024/12/04
 npm install -D prettier eslint-config-prettier eslint-plugin-prettier @typescript-eslint/parser @typescript-eslint/eslint-plugin
+
+# コードのフォーマット
+
 npm run format
+
+# リントエラーの修正
+
+npm run lint:fix
