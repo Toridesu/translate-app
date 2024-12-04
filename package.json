@@ -6,7 +6,10 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "lint:fix": "eslint --fix ."
   },
   "dependencies": {
     "@radix-ui/react-accordion": "^1.2.1",

@@ -31,7 +31,7 @@ export const useTranslationStore = create<TranslationStore>((set, get) => ({
             timestamp: new Date(),
           },
           ...langHistory
-        ].slice(0, 10)  // 最新の10件のみを保持
+        ].slice(0, 50)  // 最新の100件のみを保持
       }
     };
   }),

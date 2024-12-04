@@ -3,7 +3,7 @@
 // import文この辺は理解してるshnd@uiみたいなの使ってる
 import React, { useState } from 'react';
 import { create } from 'zustand';
-import { Bookmark, Edit2, Edit3, Menu } from 'lucide-react';
+import { Bookmark, Edit2, Menu } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
@@ -318,6 +318,7 @@ const SavedPhraseItem = ({ phrase, targetLang }) => {
   const [translation, setTranslation] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
 
+  // ここでリアルタイムに翻訳させてる
   React.useEffect(() => {
     setIsLoading(true);
     mockTranslate(phrase.japanese, targetLang)
