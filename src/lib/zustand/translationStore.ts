@@ -7,7 +7,7 @@ interface Translation {
 }
 
 interface TranslationHistory {
-  [key: string]: Translation[];  // 言語コードをキーとして使用
+  [key: string]: Translation[]; // 言語コードをキーとして使用
 }
 
 interface TranslationStore {
@@ -18,24 +18,25 @@ interface TranslationStore {
 
 export const useTranslationStore = create<TranslationStore>((set, get) => ({
   history: {},
-  
-  addTranslation: (lang, input, translated) => set((state) => {
-    const langHistory = state.history[lang] || [];
-    return {
-      history: {
-        ...state.history,
-        [lang]: [
-          {
-            inputText: input,
-            translatedText: translated,
-            timestamp: new Date(),
-          },
-          ...langHistory
-        ].slice(0, 50)  // 最新の100件のみを保持
-      }
-    };
-  }),
-  
+
+  addTranslation: (lang, input, translated) =>
+    set((state) => {
+      const langHistory = state.history[lang] || [];
+      return {
+        history: {
+          ...state.history,
+          [lang]: [
+            {
+              inputText: input,
+              translatedText: translated,
+              timestamp: new Date(),
+            },
+            ...langHistory,
+          ].slice(0, 50), // 最新の100件のみを保持
+        },
+      };
+    }),
+
   getHistoryByLang: (lang) => {
     return get().history[lang] || [];
   },

@@ -162,7 +162,7 @@ const TranslationApp = () => {
         <DialogTrigger asChild>
           <Button variant='outline' size='icon' className='flex-shrink-0, w-full' disabled={isTranslating}>
             <Edit2 className='h-4 w-4' />
-            言語選択 
+            言語選択
           </Button>
         </DialogTrigger>
         <DialogContent className='w-[90vw] max-w-lg'>
@@ -176,7 +176,9 @@ const TranslationApp = () => {
                 variant={store.activeLanguages.includes(code) ? 'default' : 'outline'}
                 onClick={() => {
                   // includeでcodeが含まれているかどうかをチェック。ストアからアクティブな言語をもってきてcodeを格納。
-                  const newLanguages = store.activeLanguages.includes(code) ? store.activeLanguages.filter((lang) => lang !== code) : [...store.activeLanguages, code];
+                  const newLanguages = store.activeLanguages.includes(code)
+                    ? store.activeLanguages.filter((lang) => lang !== code)
+                    : [...store.activeLanguages, code];
                   store.updateActiveLanguages(newLanguages);
                 }}
                 className='w-32'
@@ -189,7 +191,13 @@ const TranslationApp = () => {
       </Dialog>
       <div className='flex flex-wrap justify-center pb-2 w-full gap-1 scrollbar-hide'>
         {store.activeLanguages.map((lang) => (
-          <Button key={lang} onClick={() => setSelectedLang(lang)} variant={selectedLang === lang ? 'default' : 'outline'} className='flex-shrink-0 w-24' disabled={isTranslating}>
+          <Button
+            key={lang}
+            onClick={() => setSelectedLang(lang)}
+            variant={selectedLang === lang ? 'default' : 'outline'}
+            className='flex-shrink-0 w-24'
+            disabled={isTranslating}
+          >
             {LANGUAGES[lang]}
           </Button>
         ))}
@@ -228,7 +236,13 @@ const TranslationApp = () => {
             <Card className='bg-white shadow-lg'>
               <CardContent className='p-4 md:p-6'>
                 <div className='space-y-4'>
-                  <Textarea value={inputText} onChange={(e) => setInputText(e.target.value)} placeholder='翻訳したい日本語を入力してください' className='min-h-[100px] text-base md:text-lg' disabled={isTranslating} />
+                  <Textarea
+                    value={inputText}
+                    onChange={(e) => setInputText(e.target.value)}
+                    placeholder='翻訳したい日本語を入力してください'
+                    className='min-h-[100px] text-base md:text-lg'
+                    disabled={isTranslating}
+                  />
 
                   <Button onClick={handleTranslate} className='w-full' disabled={isTranslating || !inputText.trim()}>
                     {isTranslating ? '翻訳中...' : `${LANGUAGES[selectedLang]}に翻訳`}
@@ -256,7 +270,11 @@ const TranslationApp = () => {
                             ))}
                           </SelectContent>
                         </Select>
-                        <Button onClick={handleSavePhrase} disabled={!selectedCategory || isTranslating} className='flex items-center gap-2'>
+                        <Button
+                          onClick={handleSavePhrase}
+                          disabled={!selectedCategory || isTranslating}
+                          className='flex items-center gap-2'
+                        >
                           <Bookmark className='w-4 h-4' />
                           保存
                         </Button>
@@ -298,7 +316,9 @@ const SavedPhrasesList = ({ selectedLang }) => {
 
         return (
           <AccordionItem key={category} value={category}>
-            <AccordionTrigger className='text-lg font-semibold text-slate-700 hover:bg-slate-50 rounded-lg px-4'>{category}</AccordionTrigger>
+            <AccordionTrigger className='text-lg font-semibold text-slate-700 hover:bg-slate-50 rounded-lg px-4'>
+              {category}
+            </AccordionTrigger>
             <AccordionContent>
               <div className='space-y-4 p-2'>
                 {phrases.map((phrase) => (
