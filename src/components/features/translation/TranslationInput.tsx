@@ -1,53 +1,45 @@
 import React, { useState } from 'react';
+import { v4 as uuidv4 } from 'uuid';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Bookmark } from 'lucide-react';
-import { useStore } from '@/lib/store/translation';
-import { mockTranslate } from '@/lib/utils/mock-translation';
-import { Translation, LANGUAGES } from '@/lib/types/translation';
-import { toast } from '@/hooks/use-toast';
+import { useTranslationStore } from '@/lib/store';
+import { useTranslation } from '@/hooks/use-translation'; // 新しいカスタムフック
+import { LANGUAGES } from '@/lib/types/translation';
+import { TranslateButton } from '@/components/atoms/TranslateButton';
+import { useToast } from '@/hooks/use-toast';
 
 export const TranslationInput: React.FC<{ selectedLang: string }> = ({ selectedLang }) => {
   const [inputText, setInputText] = useState('');
-  const [currentTranslation, setCurrentTranslation] = useState<Translation | null>(null);
-  const [isTranslating, setIsTranslating] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState('');
+  const { toast } = useToast();
 
-  const store = useStore();
+  const { translatedText, isTranslating, translate, resetTranslation } = useTranslation(selectedLang);
+
+  const { categories, addTranslation, savePhrase } = useTranslationStore();
 
   const handleTranslate = async () => {
     if (!inputText.trim() || isTranslating) return;
-
-    setIsTranslating(true);
-    try {
-      const result = await mockTranslate(inputText, selectedLang);
-      setCurrentTranslation(result);
-      toast({
-        title: '翻訳完了',
-        description: '翻訳が正常に完了しました。',
-      });
-    } catch (error) {
-      toast({
-        title: 'エラー',
-        description: '翻訳中にエラーが発生しました。',
-        variant: 'destructive',
-      });
-    } finally {
-      setIsTranslating(false);
-    }
+    await translate(inputText);
   };
 
   const handleSavePhrase = () => {
-    if (!inputText || !selectedCategory || !currentTranslation) return;
+    if (!inputText || !selectedCategory || !translatedText) return;
 
-    store.addPhrase({
-      id: Date.now().toString(),
-      japanese: inputText,
+    const translationId = uuidv4();
+    const translation = {
+      id: translationId,
+      inputText,
+      translatedText,
+      timestamp: new Date(),
       category: selectedCategory,
-      timestamp: Date.now(),
-    });
+      isSaved: true,
+    };
+
+    addTranslation(translation);
+    savePhrase(translationId);
 
     toast({
       title: 'フレーズを保存しました',
@@ -55,8 +47,8 @@ export const TranslationInput: React.FC<{ selectedLang: string }> = ({ selectedL
     });
 
     setInputText('');
-    setCurrentTranslation(null);
     setSelectedCategory('');
+    resetTranslation();
   };
 
   return (
@@ -71,27 +63,18 @@ export const TranslationInput: React.FC<{ selectedLang: string }> = ({ selectedL
             disabled={isTranslating}
           />
 
-          <Button
+          <TranslateButton
+            isTranslating={isTranslating}
             onClick={handleTranslate}
-            className='w-full h-12 text-lg'
-            disabled={isTranslating || !inputText.trim()}
-          >
-            {isTranslating ? (
-              <span className='flex items-center gap-2'>
-                <span className='animate-spin'>⭕</span>
-                翻訳中...
-              </span>
-            ) : (
-              `${LANGUAGES[selectedLang]}に翻訳`
-            )}
-          </Button>
+            inputText={inputText}
+            selectedLang={selectedLang}
+          />
 
-          {currentTranslation && (
+          {translatedText && (
             <div className='space-y-4 mt-4'>
               <div className='p-4 bg-slate-50 rounded-lg space-y-2'>
                 <div className='font-bold text-slate-700'>{LANGUAGES[selectedLang]}</div>
-                <div className='text-base md:text-lg'>{currentTranslation.text}</div>
-                <div className='text-sm text-slate-600'>{currentTranslation.pronunciation}</div>
+                <div className='text-base md:text-lg'>{translatedText}</div>
               </div>
 
               <div className='flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-4'>
@@ -100,7 +83,7 @@ export const TranslationInput: React.FC<{ selectedLang: string }> = ({ selectedL
                     <SelectValue placeholder='カテゴリを選択' />
                   </SelectTrigger>
                   <SelectContent>
-                    {store.categories.map((category) => (
+                    {categories.map((category) => (
                       <SelectItem key={category} value={category}>
                         {category}
                       </SelectItem>

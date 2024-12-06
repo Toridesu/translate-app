@@ -1,6 +1,15 @@
-import { Translation, TranslationData } from '../types/translation';
+interface MockTranslation {
+  text: string;
+  pronunciation: string;
+}
 
-const MOCK_TRANSLATIONS: TranslationData = {
+interface MockTranslationData {
+  [key: string]: {
+    [lang: string]: MockTranslation;
+  };
+}
+
+const MOCK_TRANSLATIONS: MockTranslationData = {
   こんにちは: {
     EN: { text: 'Hello', pronunciation: 'həˈloʊ' },
     ES: { text: 'Hola', pronunciation: 'oʊˈlɑː' },
@@ -27,7 +36,10 @@ const MOCK_TRANSLATIONS: TranslationData = {
   },
 };
 
-export const mockTranslate = async (text: string, targetLang: string): Promise<Translation> => {
+export const mockTranslate = async (
+  text: string,
+  targetLang: string
+): Promise<MockTranslation> => {
   await new Promise((resolve) => setTimeout(resolve, 500)); // Simulate API delay
 
   if (!MOCK_TRANSLATIONS[text]) {
