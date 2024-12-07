@@ -1,37 +1,42 @@
 export interface Translation {
+  text: string;
+  pronunciation: string;
+}
+
+export interface TranslationData {
+  [key: string]: {
+    [key: string]: Translation;
+  };
+}
+
+export interface SavedPhrase {
   id: string;
-  inputText: string;
-  translatedText: string;
-  timestamp: Date;
-  category?: string;
-  isSaved: boolean;
+  japanese: string;
+  category: string;
+  timestamp: number;
 }
 
-export interface TranslationState {
-  activeLanguages: string[];
-  sourceLanguage: string;
-  targetLanguage: string;
+export interface TranslationStore {
+  savedPhrases: SavedPhrase[];
   categories: string[];
-  savedPhrases: Translation[];
-  history: Translation[];
-
-  setLanguages: (source: string, target: string) => void;
-  addTranslation: (translation: Translation) => void;
-  savePhrase: (translationId: string) => void;
-  removePhrase: (translationId: string) => void;
+  activeLanguages: string[];
+  addPhrase: (phrase: SavedPhrase) => void;
+  removePhrase: (id: string) => void;
   addCategory: (category: string) => void;
-  clearHistory: () => void;
+  updateActiveLanguages: (languages: string[]) => void;
 }
 
-export const LANGUAGES: { [key: string]: string } = {
-  JA: '日本語',
+export const LANGUAGES = {
   EN: '英語',
   ES: 'スペイン語',
   FR: 'フランス語',
-  DE: 'ドイツ語',
+  KO: '韓国語',
+  ZH: '中国語',
+  JA: '日本語',
   IT: 'イタリア語',
   PT: 'ポルトガル語',
   RU: 'ロシア語',
-  KO: '韓国語',
-  ZH: '中国語',
+  DE: 'ドイツ語',
 } as const;
+
+export type LanguageCode = keyof typeof LANGUAGES;

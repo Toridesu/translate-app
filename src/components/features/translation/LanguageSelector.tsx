@@ -2,7 +2,7 @@ import React from 'react';
 import { Globe2 } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
-import { useTranslationStore } from '@/lib/store';
+import { useStore } from '@/lib/store/translation';
 import { LANGUAGES } from '@/lib/types/translation';
 
 interface LanguageSelectorProps {
@@ -11,12 +11,7 @@ interface LanguageSelectorProps {
 }
 
 export const LanguageSelector: React.FC<LanguageSelectorProps> = ({ selectedLang, onLanguageSelect }) => {
-  const { activeLanguages, setLanguages, sourceLanguage } = useTranslationStore();
-
-  const handleLanguageSelect = (lang: string) => {
-    onLanguageSelect(lang);
-    setLanguages(sourceLanguage, lang);
-  };
+  const { activeLanguages, updateActiveLanguages } = useStore();
 
   return (
     <div className='space-y-4'>
@@ -40,7 +35,12 @@ export const LanguageSelector: React.FC<LanguageSelectorProps> = ({ selectedLang
                 <Button
                   key={code}
                   variant={activeLanguages.includes(code) ? 'default' : 'outline'}
-                  onClick={() => handleLanguageSelect(code)}
+                  onClick={() => {
+                    const newLanguages = activeLanguages.includes(code)
+                      ? activeLanguages.filter((lang) => lang !== code)
+                      : [...activeLanguages, code];
+                    updateActiveLanguages(newLanguages);
+                  }}
                   className='w-full justify-start gap-2'
                 >
                   {name}
@@ -55,7 +55,7 @@ export const LanguageSelector: React.FC<LanguageSelectorProps> = ({ selectedLang
         {activeLanguages.map((lang) => (
           <Button
             key={lang}
-            onClick={() => handleLanguageSelect(lang)}
+            onClick={() => onLanguageSelect(lang)}
             variant={selectedLang === lang ? 'default' : 'outline'}
             className='flex justify-center min-w-[100px] max-w-[100px]'
           >

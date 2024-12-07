@@ -3,25 +3,21 @@ import { Search } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { Badge } from '@/components/ui/badge';
-import { useTranslationStore } from '@/lib/store';
+import { useStore } from '@/lib/store/translation';
 import { SavedPhraseItem } from './SavedPhraseItem';
 
-export const SavedPhrasesManager: React.FC = () => {
+interface SavedPhrasesManagerProps {
+  selectedLang: string;
+}
+
+export const SavedPhrasesManager: React.FC<SavedPhrasesManagerProps> = ({ selectedLang }) => {
   const [searchTerm, setSearchTerm] = useState('');
-  const { savedPhrases, categories, removePhrase } = useTranslationStore();
+  const { savedPhrases, categories, removePhrase } = useStore();
 
   const filteredPhrases = savedPhrases.filter(
     (phrase) =>
-      phrase.inputText.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      (phrase.category && phrase.category.toLowerCase().includes(searchTerm.toLowerCase()))
-  );
-
-  const phrasesByCategory = categories.reduce(
-    (acc, category) => {
-      acc[category] = filteredPhrases.filter((p) => p.category === category);
-      return acc;
-    },
-    {} as Record<string, typeof filteredPhrases>
+      phrase.japanese.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      phrase.category.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   return (
@@ -38,7 +34,7 @@ export const SavedPhrasesManager: React.FC = () => {
 
       <Accordion type='multiple' className='space-y-2'>
         {categories.map((category) => {
-          const categoryPhrases = phrasesByCategory[category] || [];
+          const categoryPhrases = filteredPhrases.filter((p) => p.category === category);
           if (categoryPhrases.length === 0) return null;
 
           return (
@@ -52,7 +48,12 @@ export const SavedPhrasesManager: React.FC = () => {
               <AccordionContent>
                 <div className='space-y-2 p-2'>
                   {categoryPhrases.map((phrase) => (
-                    <SavedPhraseItem key={phrase.id} phrase={phrase} onRemove={removePhrase} />
+                    <SavedPhraseItem
+                      key={phrase.id}
+                      phrase={phrase}
+                      targetLang={selectedLang}
+                      onRemove={() => removePhrase(phrase.id)}
+                    />
                   ))}
                 </div>
               </AccordionContent>
@@ -60,10 +61,6 @@ export const SavedPhrasesManager: React.FC = () => {
           );
         })}
       </Accordion>
-
-      {filteredPhrases.length === 0 && (
-        <div className='text-center text-slate-500 py-4'>保存されたフレーズはありません</div>
-      )}
     </div>
   );
 };
