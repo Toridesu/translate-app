@@ -2,8 +2,8 @@ import React from 'react';
 import { Globe2 } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
-import { useStore } from '@/lib/store/translation';
-import { LANGUAGES } from '@/lib/types/translation';
+import { useStore } from '@/stores/translation';
+import { LANGUAGES } from '@/types/translation';
 
 interface LanguageSelectorProps {
   selectedLang: string;
@@ -59,7 +59,8 @@ export const LanguageSelector: React.FC<LanguageSelectorProps> = ({ selectedLang
             variant={selectedLang === lang ? 'default' : 'outline'}
             className='flex justify-center min-w-[100px] max-w-[100px]'
           >
-            {LANGUAGES[lang]}
+            {/* エラーを無視 {LANGUAGES[lang]} */}
+            {LANGUAGES[lang as keyof typeof LANGUAGES]}
           </Button>
         ))}
       </div>

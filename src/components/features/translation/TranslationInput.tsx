@@ -3,11 +3,11 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Bookmark } from 'lucide-react';
-import { useStore } from '@/lib/store/translation';
-import { mockTranslate } from '@/lib/utils/mock-translation';
-import { Translation, LANGUAGES } from '@/lib/types/translation';
-import { toast } from '@/hooks/use-toast';
+import { Bookmark, Loader2 } from 'lucide-react';
+import { useStore } from '@/stores/translation';
+import { mockTranslate } from '@/services/mock-translation';
+import { Translation, LANGUAGES } from '@/types/translation';
+import { toast } from '@/components/hooks/use-toast';
 
 export const TranslationInput: React.FC<{ selectedLang: string }> = ({ selectedLang }) => {
   const [inputText, setInputText] = useState('');
@@ -31,7 +31,7 @@ export const TranslationInput: React.FC<{ selectedLang: string }> = ({ selectedL
     } catch (error) {
       toast({
         title: 'エラー',
-        description: '翻訳中にエラーが発生しました。',
+        description: error instanceof Error ? error.message : '翻訳中に予期せぬエラーが発生しました。',
         variant: 'destructive',
       });
     } finally {
@@ -78,18 +78,19 @@ export const TranslationInput: React.FC<{ selectedLang: string }> = ({ selectedL
           >
             {isTranslating ? (
               <span className='flex items-center gap-2'>
-                <span className='animate-spin'>⭕</span>
+                <Loader2 className='h-4 w-4 animate-spin' />
                 翻訳中...
               </span>
             ) : (
-              `${LANGUAGES[selectedLang]}に翻訳`
+              `${LANGUAGES[selectedLang as keyof typeof LANGUAGES]}に翻訳` // エラーを無視
             )}
           </Button>
 
           {currentTranslation && (
             <div className='space-y-4 mt-4'>
               <div className='p-4 bg-slate-50 rounded-lg space-y-2'>
-                <div className='font-bold text-slate-700'>{LANGUAGES[selectedLang]}</div>
+                <div className='font-bold text-slate-700'>{LANGUAGES[selectedLang as keyof typeof LANGUAGES]}</div>{' '}
+                {/* エラーを無視 */}
                 <div className='text-base md:text-lg'>{currentTranslation.text}</div>
                 <div className='text-sm text-slate-600'>{currentTranslation.pronunciation}</div>
               </div>

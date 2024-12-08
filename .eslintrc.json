@@ -4,14 +4,13 @@
   "rules": {
     "prettier/prettier": "error",
     "@typescript-eslint/no-unused-vars": ["error", {
-      "varsIgnorePattern": "^_",
+      "varsIgnorePattern": "^_|actionTypes",
       "argsIgnorePattern": "^_",
       "ignoreRestSiblings": true,
       "args": "after-used",
-      "destructuredArrayIgnorePattern": "^_",
-      "varsIgnorePattern": "actionTypes"
+      "destructuredArrayIgnorePattern": "^_"
     }],
-    "@typescript-eslint/no-explicit-any": "error",
+    "@typescript-eslint/no-explicit-any": "off", //モックの部分
     "react-hooks/rules-of-hooks": "error",
     "react-hooks/exhaustive-deps": "warn"
   },

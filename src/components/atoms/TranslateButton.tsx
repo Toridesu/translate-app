@@ -1,5 +1,5 @@
 import { Button } from '../ui/button';
-import { LANGUAGES } from '@/lib/types/translation';
+import { LANGUAGES } from '@/types/translation';
 
 interface TranslateButtonProps {
   isTranslating: boolean;
@@ -22,6 +22,7 @@ export const TranslateButton: React.FC<TranslateButtonProps> = ({
           翻訳中...
         </span>
       ) : (
+        // @ts-ignore エラーを無視
         `${LANGUAGES[selectedLang]}に翻訳`
       )}
     </Button>

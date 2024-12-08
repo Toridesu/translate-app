@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { Search } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { Badge } from '@/components/ui/badge';
-import { useStore } from '@/lib/store/translation';
+import { useStore } from '@/stores/translation';
 import { SavedPhraseItem } from './SavedPhraseItem';
 
 interface SavedPhrasesManagerProps {
@@ -14,10 +14,14 @@ export const SavedPhrasesManager: React.FC<SavedPhrasesManagerProps> = ({ select
   const [searchTerm, setSearchTerm] = useState('');
   const { savedPhrases, categories, removePhrase } = useStore();
 
-  const filteredPhrases = savedPhrases.filter(
-    (phrase) =>
-      phrase.japanese.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      phrase.category.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredPhrases = useMemo(
+    () =>
+      savedPhrases.filter(
+        (phrase) =>
+          phrase.japanese.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          phrase.category.toLowerCase().includes(searchTerm.toLowerCase())
+      ),
+    [savedPhrases, searchTerm]
   );
 
   return (

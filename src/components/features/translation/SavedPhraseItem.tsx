@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Volume2, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { mockTranslate } from '@/lib/utils/mock-translation';
-import { Translation } from '@/lib/types/translation';
+import { mockTranslate } from '@/services/mock-translation';
+import { Translation } from '@/types/translation';
 
 interface SavedPhraseItemProps {
   phrase: {
